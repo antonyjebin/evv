@@ -4,8 +4,7 @@ resource "aws_instance" "app" {
   instance_type             = "t2.micro"
   subnet_id                 = element(aws_subnet.private.*.id, count.index)
   security_groups           = [aws_security_group.app_sg.id]
-  associate_public_ip_address = false
-
+  associate_public_ip_address = true
   tags = {
     Name = "AppInstance${count.index}"
   }
