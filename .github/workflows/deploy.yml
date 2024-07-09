@@ -50,4 +50,4 @@ jobs:
 
     - name: Apply Terraform configuration
       working-directory: ./aws-infra
-      run: terraform apply -auto-approve
+      run: terraform destroy -auto-approve
