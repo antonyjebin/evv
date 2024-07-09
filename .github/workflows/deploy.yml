@@ -44,14 +44,11 @@ jobs:
     - name: Navigate to Terraform directory
       run: cd aws-infra
 
-    - name: Terraform Init
-      working-directory: ./aws-infra
-      run: terraform init -backend-config="bucket=terraform-state-bucket" -backend-config="key=terraform.tfstate" -backend-config="region=us-east-1"
 
-    - name: Terraform Plan
+    - name: Initialize Terraform
       working-directory: ./aws-infra
-      run: terraform plan -out=tfplan
+      run: terraform init
 
-    - name: Terraform Apply
+    - name: Apply Terraform configuration
       working-directory: ./aws-infra
-      run: terraform destroy -auto-approve
+      run: terraform apply -auto-approve
