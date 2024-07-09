@@ -1,6 +1,6 @@
 resource "aws_instance" "app" {
   count                     = 2
-  ami                       = "ami-0c2af51e265bd5e0e"
+  ami                       = "ami-0a0e5d9c7acc336f1"
   instance_type             = "t2.micro"
   subnet_id                 = element(aws_subnet.private.*.id, count.index)
   security_groups           = [aws_security_group.app_sg.id]
