@@ -10,12 +10,12 @@ resource "aws_instance" "app" {
     Name = "AppInstance${count.index}"
   }
 
-  user_data = <<-EOFSS
-            #!/bin/bash
-            apt-get update
-            apt-get install -y docker.io
-            systemctl start docker
-            systemctl enable docker
-            docker run -d -p 3000:3000 your-dockerhub-username/hello-world-app
+  user_data = <<-EOF
+    #!/bin/bash
+    apt-get update
+    apt-get install -y docker.io
+    systemctl start docker
+    systemctl enable docker
+    docker run -d -p 3000:3000 antonyjebinraj/my-app
   EOF
 }
