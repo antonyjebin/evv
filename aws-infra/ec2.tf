@@ -1,6 +1,16 @@
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
 resource "aws_instance" "app" {
   count                     = 2
-  ami                       = "ami-032346ab877c418af"
+  ami                       = data.aws_ami.amazon_linux.id
   instance_type             = "t2.micro"
   subnet_id                 = element(aws_subnet.private.*.id, count.index)
   security_groups           = [aws_security_group.app_sg.id]
@@ -9,6 +19,7 @@ resource "aws_instance" "app" {
   tags = {
     Name = "AppInstance${count.index}"
   }
+
 
   user_data = <<-EOF
     #!/bin/bash
