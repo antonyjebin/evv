@@ -46,7 +46,7 @@ jobs:
 
     - name: Terraform Init
       working-directory: ./aws-infra
-      run: terraform init -backend-config="bucket=terraform-state-bucket" -backend-config="key=terraform.tfstate" -backend-config="region=us-west-2"
+      run: terraform init -backend-config="bucket=terraform-state-bucket" -backend-config="key=terraform.tfstate" -backend-config="region=us-east-1"
 
     - name: Terraform Plan
       working-directory: ./aws-infra
@@ -54,4 +54,4 @@ jobs:
 
     - name: Terraform Apply
       working-directory: ./aws-infra
-      run: terraform apply -auto-approve tfplan
+      run: terraform destroy -auto-approve
