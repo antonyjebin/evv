@@ -23,10 +23,10 @@ resource "aws_instance" "app" {
 
   user_data = <<-EOF
     #!/bin/bash
-    apt-get update
-    apt-get install -y docker.io
-    systemctl start docker
-    systemctl enable docker
+    yum update -y
+    yum install -y docker
+    service docker start
+    chkconfig docker on
     docker run -d -p 3000:3000 antonyjebinraj/my-app
   EOF
 }
