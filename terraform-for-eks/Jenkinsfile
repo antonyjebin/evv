@@ -30,19 +30,6 @@ pipeline {
                     }
                 }
             }
-        }
-        stage("Deploy to Prometheus and Grafana") {
-            steps {
-                script {
-                    dir('my-app/prometheus-grafana') {
-                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region us-west-2"
-                        sh "kubectl apply -f prometheus.yaml"
-                        sh "kubectl apply -f prometheus-config.yaml"
-                        sh "kubectl apply -f grafana.yaml"
-
-                    }
-                }
-            }
-        }
+        }g
     }
 }
