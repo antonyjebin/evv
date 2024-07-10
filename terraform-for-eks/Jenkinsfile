@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = "us-west-2"
+    }
+    stages {
+        stage("Create an EKS Cluster") {
+            steps {
+                script {
+                    dir('terraform-for-eks/terraform-for-cluster') {
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
+                    }
+                }
+            }
+        }
+        stage("Deploy to Backend") {
+            steps {
+                script {
+                    dir('my-app/backend') {
+                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region us-west-2"
+                        sh "docker build -t myapp-backend ."
+                        sh "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 038675313786.dkr.ecr.us-west-2.amazonaws.com"
+                        sh "docker tag myapp-backend:latest 038675313786.dkr.ecr.us-west-2.amazonaws.com/myapp-backend:latest"
+                        sh "docker push 038675313786.dkr.ecr.us-west-2.amazonaws.com/myapp-backend:latest"
+                        sh "kubectl apply -f deployment-service.yaml"
+                        sh "kubectl apply -f hpa.yaml"
+                    }
+                }
+            }
+        }
+        stage("Deploy to Prometheus and Grafana") {
+            steps {
+                script {
+                    dir('my-app/prometheus-grafana') {
+                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region us-west-2"
+                        sh "kubectl apply -f prometheus.yaml"
+                        sh "kubectl apply -f prometheus-config.yaml"
+                        sh "kubectl apply -f grafana.yaml"
+
+                    }
+                }
+            }
+        }
+    }
+}
